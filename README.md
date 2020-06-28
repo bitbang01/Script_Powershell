@@ -1,6 +1,6 @@
 # Visit:
 * [Github Pages Link](https://www.github.com/bitbang01)
-* [Blog](https://lazywinadmin.com)
+* [Blog](https://****)
 * [Twitter @*****](https://twitter.com/****)
 
 # Script_Powershell
