@@ -6,4 +6,12 @@
   2. Each command's text output file will be stored on your Desktop location
   3. Script will read the files and show relevent information related to the Healthcheck and removed extra lines of information which consumes time
   
-# Achievement: A lot of time can be saved reading the row output of all four commands by executing this simple script
+# Achievement:
+A lot of time can be saved as reading each file output manually will consume time
+
+# What Next:
+  * Proper Documentation still pending
+  * Create GUI Interface for all DC related healthchecks and information
+  * Happy to work with collaborators: Lets take the project to next BitBang
+  
+  
