@@ -1,3 +1,8 @@
+# Visit:
+* [Github Pages Link](https://www.github.com/bitbang01)
+* [Blog](https://lazywinadmin.com)
+* [Twitter @*****](https://twitter.com/****)
+
 # Script_Powershell
 # Title: Powershell Script for Easy DC Healthceck
 
