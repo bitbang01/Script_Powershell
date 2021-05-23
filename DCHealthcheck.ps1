@@ -1,4 +1,3 @@
-
 function Run-BasicChecks{
 
 Write-Host "`n`n########################################## Netdom Query FSMO #####################################################" -ForegroundColor Yellow
@@ -77,12 +76,57 @@ $host.ui.RawUI.ForegroundColor = “Cyan”
 Repadmin /viewlist * 
 $host.ui.RawUI.ForegroundColor = $t           
             }  	
+			
+function Check-Services{
+Write-Host "`n `n ########################################### Checking Essential Services Running Status #############################" -ForegroundColor Yellow
+Write-Host "################################################################################################################## `n" -ForegroundColor Yellow
 	
-function perform-Healthcheck{
-Run-BasicChecks
-Run-kccHealthcheck
-Read-ResultFiles
-View-DCList
+        $serviceNames ='NETLOGON','KDC','ADWS','DNS'
+        foreach($serviceName in $serviceNames){
+        If (Get-Service $serviceName -ErrorAction SilentlyContinue) {
+        If ((Get-Service $serviceName).Status -eq 'Running') {
+        Write-Host "`n         $serviceName Service is running" -foregroundcolor green      } 
+        Else { Write-Host "`n         $serviceName Service found, but it is not running." -foregroundcolor red    }    } 
+        Else {  Write-Host "`n         $serviceName Service is not installed on the machine" -foregroundcolor red }
+    }
 }
 
-perform-Healthcheck
+function Check-sysvolnetlogon{
+Write-Host "`n`n######################################## Checking SMBShare #######################################" -ForegroundColor Yellow
+Write-Host "################################################################################################################## `n" -ForegroundColor Yellow
+
+Get-SMBShare > C:\Users\$env:username\Desktop\healthcheck.txt
+$smboutfile = get-content C:\Users\$env:username\Desktop\healthcheck.txt
+
+foreach($lne in $smboutfile){
+if($lne -like "*SYSVOL*" -or $lne -like "*NETLOGON*" ){write-host $lne -ForegroundColor Green}
+else{write-host $lne}
+}
+
+$emptypath = get-smbshare |Where-Object path -eq "" | select name 
+foreach($path in $emptypath.name){
+if($path -eq "SYSVOL"){ write-host "SYSVOL folder path is missing" -foregroundcolor red}	
+if($path -eq "NETLOGON"){ write-host "NETLOGON folder path is missing" -foregroundcolor red}	
+
+}	
+
+$AAA = Get-ChildItem -Path C:\Users\$env:username\Desktop\healthcheck.txt |Select-String -Pattern 'SYSVOL'
+if($AAA.Matches.Length -eq 0){write-host "SYSVOL share is not available on the machine" -foregroundcolor red}
+
+$BBB = Get-ChildItem -Path C:\Users\$env:username\Desktop\healthcheck.txt |Select-String -Pattern 'NETLOGON'
+if($BBB.Matches.Length -eq 0){write-host "NETLOGON Share is not available on the machine" -foregroundcolor red}
+}
+
+function perform-Healthcheck{
+cls
+Run-BasicChecks
+Run-kccHealthcheck
+Check-Services
+Check-sysvolnetlogon
+Read-ResultFiles
+View-DCList
+
+
+}
+
+perform-Healthcheck      
